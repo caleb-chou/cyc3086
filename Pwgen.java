@@ -106,7 +106,11 @@ class Password {
 	
 	String pass;
 	Password(int len, boolean sym, boolean num, boolean lower, boolean upper) {
-		pass = create(len,sym,num,lower,upper);
+		try {
+			pass = create(len,sym,num,lower,upper);
+		} catch (Exception e ) {
+			pass = "Please select some characters.";
+		}
 	}
 	private String create(int len, boolean sym, boolean num, boolean lower, boolean upper) {
 		ArrayList<String> resources = new ArrayList<String>();
