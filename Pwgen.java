@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.JPanel;
 import javax.swing.JCheckBox;
@@ -99,15 +101,30 @@ class Password {
 	private String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	private String nums  = "1234567890";
 	private String sym   = "!@#$%^&*();:\'\",./?\\";
+	private Random rand;
+	private StringBuilder sb;
 	
 	String pass;
 	Password(int len, boolean sym, boolean num, boolean lower, boolean upper) {
 		pass = create(len,sym,num,lower,upper);
 	}
 	private String create(int len, boolean sym, boolean num, boolean lower, boolean upper) {
-		String temp = "";
-		
-		return temp;
+		ArrayList<String> resources = new ArrayList<String>();
+		if(sym)  resources.add(this.sym);
+		if(num)  resources.add(this.nums);
+		if(lower)resources.add(this.lower);
+		if(upper)resources.add(this.upper);
+		String pw = "";
+		rand = new Random();
+		sb = new StringBuilder();
+		while (pw.length() < len) {
+			int cat = (int) (rand.nextFloat() * resources.size());
+			//System.out.println(cat);
+			char[] temp = resources.get(cat).toCharArray();
+			int index = (int) (rand.nextFloat() * temp.length);
+			pw += temp[index];
+		}
+		return pw;
 	}
 	public String toString() {
 		return pass;
