@@ -19,9 +19,7 @@ public class Pwgen {
 
 	private JFrame frame;
 	private JTextField textField;
-
-	private short length;
-	private boolean capital,lowercase,numbers,symbols;
+	
 	/**
 	 * Launch the application.
 	 */
@@ -65,11 +63,7 @@ public class Pwgen {
 		textField.setColumns(16);
 		
 		JButton btnGenerate = new JButton("Generate");
-		btnGenerate.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				textField.setText(new Password(length,symbols,numbers,lowercase,capital).toString() );
-			}
-		});
+		
 		panel.add(btnGenerate);
 		
 		JPanel panel_1 = new JPanel();
@@ -90,16 +84,27 @@ public class Pwgen {
 		
 		JCheckBox chckbxCapitalLetters = new JCheckBox("Capital Letters");
 		panel_1.add(chckbxCapitalLetters);
+		
+		btnGenerate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				textField.setText(new Password((Integer) numchar.getValue(),chckbxSymbols.isSelected(),chckbxNumbers.isSelected(),chckbxLowercaseLetters.isSelected(),chckbxCapitalLetters.isSelected()).toString() );
+			}
+		});
 	}
 
 }
 
 class Password {
+	private String lower = "abcdefghijklmnopqrstuvwxyz";
+	private String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	private String nums  = "1234567890";
+	private String sym   = "!@#$%^&*();:\'\",./?\\";
+	
 	String pass;
-	Password(short len, boolean sym, boolean num, boolean lower, boolean upper) {
+	Password(int len, boolean sym, boolean num, boolean lower, boolean upper) {
 		pass = create(len,sym,num,lower,upper);
 	}
-	private String create(short len, boolean sym, boolean num, boolean lower, boolean upper) {
+	private String create(int len, boolean sym, boolean num, boolean lower, boolean upper) {
 		String temp = "";
 		
 		return temp;
