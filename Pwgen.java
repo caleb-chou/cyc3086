@@ -6,7 +6,6 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import javax.swing.JLabel;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -21,6 +20,7 @@ public class Pwgen {
 
 	private JFrame frame;
 	private JTextField textField;
+	private JTextField txtenterCharacters;
 	
 	/**
 	 * Launch the application.
@@ -62,7 +62,7 @@ public class Pwgen {
 		
 		textField = new JTextField();
 		panel.add(textField);
-		textField.setColumns(16);
+		textField.setColumns(32);
 		
 		JButton btnGenerate = new JButton("Generate");
 		
@@ -70,6 +70,9 @@ public class Pwgen {
 		
 		JPanel panel_1 = new JPanel();
 		frame.getContentPane().add(panel_1, BorderLayout.NORTH);
+		
+		JLabel lblLentgh = new JLabel("Lentgh");
+		panel_1.add(lblLentgh);
 		
 		JSpinner numchar = new JSpinner();
 		panel_1.add(numchar);
@@ -83,13 +86,36 @@ public class Pwgen {
 		
 		JCheckBox chckbxLowercaseLetters = new JCheckBox("Lowercase Letters");
 		panel_1.add(chckbxLowercaseLetters);
+		chckbxLowercaseLetters.setSelected(true);
 		
 		JCheckBox chckbxCapitalLetters = new JCheckBox("Capital Letters");
 		panel_1.add(chckbxCapitalLetters);
+		chckbxCapitalLetters.setSelected(true);
+		
+		JPanel panel_2 = new JPanel();
+		frame.getContentPane().add(panel_2, BorderLayout.SOUTH);
+		
+		JLabel lblCustomCharacterSet = new JLabel("Custom Character Set");
+		panel_2.add(lblCustomCharacterSet);
+		
+		txtenterCharacters = new JTextField();
+		panel_2.add(txtenterCharacters);
+		txtenterCharacters.setColumns(27);
+		
+		JCheckBox chckbxCustom = new JCheckBox("Use Custom");
+		panel_2.add(chckbxCustom);
 		
 		btnGenerate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				textField.setText(new Password((Integer) numchar.getValue(),chckbxSymbols.isSelected(),chckbxNumbers.isSelected(),chckbxLowercaseLetters.isSelected(),chckbxCapitalLetters.isSelected()).toString() );
+				textField.setText(
+						(!chckbxCustom.isSelected()) ? 
+						new Password(
+								(Integer) numchar.getValue(),
+								chckbxSymbols.isSelected(),chckbxNumbers.isSelected(),
+								chckbxLowercaseLetters.isSelected(),
+								chckbxCapitalLetters.isSelected())
+						.toString() : new Password(txtenterCharacters.getText(), (Integer) numchar.getValue()).toString()
+						);
 			}
 		});
 	}
@@ -112,23 +138,39 @@ class Password {
 			pass = "Please select some characters.";
 		}
 	}
+	Password(String custom,int pwlen) {
+		try {
+			pass = create(custom,pwlen);
+		} catch (Exception e ) {
+			pass = "Please enter some characters.";
+		}
+	}
 	private String create(int len, boolean sym, boolean num, boolean lower, boolean upper) {
 		ArrayList<String> resources = new ArrayList<String>();
-		if(sym)  resources.add(this.sym);
-		if(num)  resources.add(this.nums);
-		if(lower)resources.add(this.lower);
-		if(upper)resources.add(this.upper);
-		String pw = "";
+		if(sym)   resources.add(this.sym);
+		if(num)   resources.add(this.nums);
+		if(lower) resources.add(this.lower);
+		if(upper) resources.add(this.upper);
 		rand = new Random();
 		sb = new StringBuilder();
-		while (pw.length() < len) {
+		while (sb.length() < len) {
 			int cat = (int) (rand.nextFloat() * resources.size());
-			//System.out.println(cat);
-			char[] temp = resources.get(cat).toCharArray();
-			int index = (int) (rand.nextFloat() * temp.length);
-			pw += temp[index];
+			String temp = resources.get(cat);
+			int index = (int) (rand.nextFloat() * temp.length());
+			sb.append(temp.charAt(index));
 		}
-		return pw;
+		return sb.toString();
+	}
+	private String create(String custom, int pwlen) {
+		String temp = custom.replaceAll("\\s", "");
+		int len = temp.length();
+		rand = new Random();
+		sb = new StringBuilder();
+		while (sb.length() < pwlen) {
+			int index = (int) (rand.nextFloat() * len);
+			sb.append(temp.charAt(index));
+		}
+		return sb.toString();
 	}
 	public String toString() {
 		return pass;
