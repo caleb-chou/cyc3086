@@ -2,7 +2,7 @@ import random
 
 tests = 1000000
 
-results = {}
+results = {'Loss':0,'SP1':0,'SP2':0,'MP':0,'LP1':0,'LP2':0,'GP':0}
 
 numspins = 3
 
@@ -11,6 +11,7 @@ for i in range(tests):
     spins = 0 
     while(points >= 0 and spins < numspins):
         spin = random.randint(0,359)
+        # print ('spin: %s' % spin)
         if(spin <= 5):
             points += 10
         elif(spin <= 115):
@@ -26,11 +27,22 @@ for i in range(tests):
         else:
             points -= 1
         spins += 1
-    outcome = -1 if points < 0 else points
-    if(outcome in results):
-        results[outcome] += 1
+        # print('points: %s' % points)
+    if points < 0:
+        results['Loss'] += 1
+    elif points <= 3:
+        results['SP1'] += 1
+    elif points <= 5:
+        results['SP2'] += 1
+    elif points <= 10:
+        results['MP'] += 1
+    elif points <= 20:
+        results['LP1'] += 1
+    elif points <= 29:
+        results['LP2'] += 1
     else:
-        results[outcome] = 1
+        results['GP'] += 1
+    # print()
 
-for k in sorted(results.keys()):
-    print('%s points %s%% of the time.' % (k, 100 * results.get(k)/tests))
+for k in results.keys():#sorted(results.keys()):
+    print('%s %s%% of the time.' % (k, 100 * results.get(k)/tests))
